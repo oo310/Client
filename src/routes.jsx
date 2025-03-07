@@ -9,7 +9,7 @@ import ExList from './ExList/ExList';
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/Client" element={<Home />} />
       <Route path="/exercise" element={<Exercise />} />
       <Route path="/list" element={<List />} />
       <Route path="/ex_list" element={<ExList />} />
