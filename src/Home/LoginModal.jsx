@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Modal, Button, Form, Alert } from "react-bootstrap";
+import { Modal, Button, Form, Alert, Spinner  } from "react-bootstrap";
 import { loginUser, registerUser } from "../firebase/firebaseAuth";
 import { DataContext } from '../DataContext';
 import { useAuth } from '../AuthContext';
@@ -13,7 +13,7 @@ const LoginModal = () => {
   const [username, setUsername] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
-  
+  const [isLoading, setIsLoading] = useState(false);
   const { quizs } = useContext(DataContext);
 
   // 監聽 userInfo 的變化，當用戶登入後自動關閉Modal
@@ -39,6 +39,7 @@ const LoginModal = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setIsLoading(true);
   
     if (isLoginMode) {
       const userData = await loginUser(email, password);
@@ -52,14 +53,18 @@ const LoginModal = () => {
       try {
         if (!username || !email || !password || !confirmPassword) {
           setError("請填寫所有欄位！");
+          setIsLoading(false);
           return;
         }
         if (password !== confirmPassword) {
           setError("密碼與確認密碼不相符！");
+          setIsLoading(false);
           return;
         }
         if (password.length > 0 && password.length < 6) {
           setError('密碼必須大於6個字');
+          setIsLoading(false);
+          return;
         }
         const result = await registerUser(username, email, password, quizs);
         
@@ -74,6 +79,7 @@ const LoginModal = () => {
         setError(error.message);
       }
     }
+    setIsLoading(false);
   };
 
   return (
@@ -129,7 +135,7 @@ const LoginModal = () => {
           )}
 
           <Button variant="primary" type="submit" className="w-100">
-            {isLoginMode ? "登入" : "註冊"}
+            {isLoading ? <Spinner animation="border" size="sm" /> : (isLoginMode ? "登入" : "註冊")}
           </Button>
         </Form>
       </Modal.Body>
