@@ -35,14 +35,19 @@ const LoginModal = () => {
     setPassword("");
     setConfirmPassword("");
   };
+  const handleEmailBlur = () => {
+    if (!email.includes('@')) {
+      setEmail(`${email}@nfu.edu.tw`);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
-  
+    const formattedEmail = email.includes('@') ? email : `${email}@nfu.edu.tw`;
     if (isLoginMode) {
-      const userData = await loginUser(email, password);
+      const userData = await loginUser(formattedEmail, password);
       if (userData) {
         login(userData);
         // 不需要手動關閉Modal，useEffect會處理
@@ -66,7 +71,7 @@ const LoginModal = () => {
           setIsLoading(false);
           return;
         }
-        const result = await registerUser(username, email, password, quizs);
+        const result = await registerUser(username, formattedEmail, password, quizs);
         
         if (result.success) {
           alert(`註冊成功！歡迎，${username}！請重新登入。`);
@@ -109,6 +114,7 @@ const LoginModal = () => {
               placeholder="輸入您的電子郵件"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              onBlur={handleEmailBlur}
             />
           </Form.Group>
 
