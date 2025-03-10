@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from './AuthContext'; // 假設 AuthContext 已經實作
-
+import './Navbar.css';
 const Navbar = () => {
   const { userInfo, login, logout } = useAuth(); // 從 AuthContext 獲取登入資訊與方法
   const navbarRef = useRef(null);

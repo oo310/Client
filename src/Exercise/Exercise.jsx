@@ -201,7 +201,7 @@ const Exercise = () => {
   return (
     <>
       <div className="exercise-header">
-        <div className="header-row">
+        <div className="header-content">
           <h3 className="question-title">{item.title}</h3>
           <p className="timer">⏳ 時間：{timeElapsed } 秒 | 📝 作答次數：{attempts}</p>
         </div>

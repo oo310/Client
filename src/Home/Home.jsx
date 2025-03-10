@@ -11,7 +11,7 @@ const Home = () => {
           您即將因閒置而登出，請點擊任意處繼續使用
         </div>
       )}
-      <h1>歡迎來到Python學習平台</h1>
+      <h1 className='mt-2 mb-2'>歡迎來到Python學習平台</h1>
       <div className="announcement">
         <h2>平台公告</h2>
         <p>歡迎使用我們的Python學習平台！以下是一些使用指南：</p>
