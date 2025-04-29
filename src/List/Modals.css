@@ -1,0 +1,20 @@
+.modal-lg .modal-body {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .d-flex {
+    display: flex;
+  }
+  
+  .flex-grow-1 {
+    flex-grow: 1;
+  }
+  
+  .ms-3 {
+    margin-left: 1rem;
+  }
+  
+  .me-auto {
+    margin-right: auto;
+  }

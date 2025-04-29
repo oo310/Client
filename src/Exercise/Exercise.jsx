@@ -11,7 +11,7 @@ import { updateUserGrades } from "../firebase/firebaseUserGrades";;
 const Exercise = () => {
   const { userInfo } = useAuth();
   const location = useLocation();
-  const { item,groupedQuizs } = location.state || {};
+  const { item, groupedQuizs } = location.state || {};
   const navigate = useNavigate();
   const answerZoneRef = useRef(null);
   const [isCorrect, setIsCorrect] = useState(false);
@@ -20,41 +20,36 @@ const Exercise = () => {
   const timerRef = useRef(null);
   
   const [blocks, setBlocks] = useState(() => {
-    if(item.code.length > 1) {
-      let randomOrder;
-      do {
-        randomOrder = [...item.code].sort(() => Math.random() - 0.5);
-      } while (randomOrder.join('') === item.code.join(''));
-      return randomOrder;
-    }
-    return [...item.code];
+    return item.code.map((code, index) => ({
+      code,
+      label: item.codeLabels ? item.codeLabels[index] : null,
+    }));
   });
-  
+
   useEffect(() => {
-    // console.log(userInfo);
     setTimeElapsed(0);
     setAttempts(0);
-    // 重置 blocks 狀態
-    if (item.code.length > 1) {
+    // 重置 blocks 和 codeLabels 狀態
+    if (blocks.length > 1) {
       let randomOrder;
       do {
-        randomOrder = [...item.code].sort(() => Math.random() - 0.5);
-      } while (randomOrder.join('') === item.code.join(''));
+        randomOrder = [...blocks].sort(() => Math.random() - 0.5);
+      } while (randomOrder.map(block => block.code).join('') === item.code.join(''));
       setBlocks(randomOrder);
     } else {
-      setBlocks([...item.code]);
+      setBlocks(blocks);
     }
-  
     // 初始化拖曳
     interact('.block').draggable({
       listeners: {
+        
         move(event) {
           const target = event.target;
-  
+
           // 計算拖曳後的位置
           const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
           const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-  
+
           // 更新元素位置
           target.style.transform = `translate(${x}px, ${y}px)`;
           target.setAttribute('data-x', x);
@@ -69,9 +64,10 @@ const Exercise = () => {
         },
       },
     });
-  
+
     // 初始化放置區
     interact('.zone').dropzone({
+      
       ondragenter(event) {
         const zone = event.target;
         zone.classList.add('hover');
@@ -83,18 +79,18 @@ const Exercise = () => {
       ondrop(event) {
         const draggedBlock = event.relatedTarget; // 被拖曳的積木
         const dropZone = event.target; // 目標放置區
-  
+
         dropZone.classList.remove('hover');
-  
+
         // 判斷拖曳目標的垂直位置
         const dropZoneBlocks = Array.from(dropZone.querySelectorAll('.block'));
         const draggedRect = draggedBlock.getBoundingClientRect();
-  
+
         let inserted = false;
-  
+
         for (const block of dropZoneBlocks) {
           const blockRect = block.getBoundingClientRect();
-  
+
           // 如果被拖曳物件在目標物件上方，插入到該物件前面
           if (draggedRect.top < blockRect.top) {
             dropZone.insertBefore(draggedBlock, block);
@@ -102,7 +98,7 @@ const Exercise = () => {
             break;
           }
         }
-  
+
         // 如果未插入，放置到目標區域的最後
         if (!inserted) {
           dropZone.appendChild(draggedBlock);
@@ -116,7 +112,7 @@ const Exercise = () => {
     timerRef.current = setInterval(() => {
       setTimeElapsed(prev => prev + 1);
     }, 1000);
-  
+
     // 清除 interact.js 的設定
     return () => {
       interact('.block').unset();
@@ -129,11 +125,10 @@ const Exercise = () => {
   // 檢查答案邏輯
   const handleSubmit = () => {
     const blocks = answerZoneRef.current.querySelectorAll('.block');
-    // const userOrder = Array.from(blocks).map((block) => block.dataset.code);
     const userOrder = Array.from(blocks).map((block) => block.textContent);
     setAttempts((prevAttempts) => {
       const newAttempts = prevAttempts + 1; // ✅ 確保取得最新 attempts
-  
+
       if (JSON.stringify(userOrder) === JSON.stringify(item.code)) {
         setIsCorrect(true);
         clearInterval(timerRef.current);
@@ -159,7 +154,7 @@ const Exercise = () => {
             }, 100);
           },
         });
-  
+
       } else {
         Swal.fire({
           title: "答案不對喔",
@@ -169,7 +164,7 @@ const Exercise = () => {
           confirmButtonColor: "#d33",
         });
       }
-  
+
       return newAttempts; // ✅ 確保狀態更新
     });
   }; 
@@ -178,12 +173,9 @@ const Exercise = () => {
   };
 
   const handleNextExercise = () => {
-    // 假設 exerciseSet.exercises 是題目陣列
     const currentIndex = groupedQuizs.findIndex(ex => ex.id === item.id);
-    // console.log(groupedQuizs);
     if (currentIndex < groupedQuizs.length - 1) {
       const nextExercise = groupedQuizs[currentIndex + 1];
-      // console.log(nextExercise);
       setIsCorrect(false)
       navigate('/exercise', { state: { item: nextExercise, groupedQuizs } });
     } else {
@@ -197,6 +189,32 @@ const Exercise = () => {
       });
     }
   };
+
+  const getColorByLabel = (label) => {
+    switch (label) {
+      case '賦值': // Variables (淺橙色)
+        return { backgroundColor: '#FFE8D6' };
+      case '運算': // Operators (改為淺藍綠色，與背景區分)
+        return { backgroundColor: '#b5e8cb' };
+      case '迴圈': // Control (加深為較明顯的橘色)
+        return { backgroundColor: '#FFD6A5' };
+      case '條件判斷': // Control (與迴圈協調但略有差異)
+        return { backgroundColor: '#FFDDB9' };
+      case '函式定義': // My Blocks (淺粉色)
+        return { backgroundColor: '#FFE6EB' };
+      case '輸出': // Looks (淺紫色)
+        return { backgroundColor: '#EFE6FF' };
+      case '輸入': // Sensing (淺藍色)
+        return { backgroundColor: '#E6F5FB' };
+      case '函式呼叫': // My Blocks (淺粉色，比函式定義稍微淡一點)
+        return { backgroundColor: '#FFF0F5' };
+      default:
+        return { backgroundColor: '#F9F9F9' }; // 預設使用非常淺的灰色
+    }
+};
+
+
+
 
   return (
     <>
@@ -214,14 +232,18 @@ const Exercise = () => {
       <div className="answer-header">
         <h2>作答區</h2>
         <div id="answer-zone" className="zone" ref={answerZoneRef}>
-          
           {blocks.map((line, index) => (
-            <div key={index} className="block block-content" draggable="true" data-code={index}>
-                {line}
+            <div 
+              key={index} 
+              className="block block-content" 
+              draggable="true" 
+              data-code={index}
+              style={getColorByLabel(line.label) }
+            >
+              {line.code}
             </div>
           ))}
         </div>
-
       </div>
 
       <div className="button-group" style={{ 
@@ -274,8 +296,6 @@ const Exercise = () => {
           </button>
         )}
       </div>
-      
-
     </>
   );
 };

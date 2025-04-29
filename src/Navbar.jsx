@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from './AuthContext'; // 假設 AuthContext 已經實作
 import './Navbar.css';
+import '@fortawesome/fontawesome-free/css/all.min.css'
 const Navbar = () => {
   const { userInfo, login, logout } = useAuth(); // 從 AuthContext 獲取登入資訊與方法
   const navbarRef = useRef(null);
@@ -20,8 +21,9 @@ const Navbar = () => {
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="container-fluid">
         {/* 網站名稱 */}
-        <Link className="navbar-brand" to="/Client" onClick={handleNavCollapse}>{userInfo?"歡迎, "+userInfo.name:"首頁"}</Link>
-
+        <Link className="navbar-brand" to="/Client" onClick={handleNavCollapse}>
+          <i className="fas fa-home"></i> {userInfo ? "歡迎, " + userInfo.name : "首頁"}
+        </Link>
         {/* 漢堡按鈕 */}
         <button 
           className="navbar-toggler" 

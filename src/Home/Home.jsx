@@ -4,6 +4,7 @@ import { useAuth } from '../AuthContext';
 const Home = () => {
   const { userInfo, timeoutWarning } = useAuth();
 
+
   return (
     <div>
       {timeoutWarning && (

@@ -25,7 +25,7 @@ export const uploadLesson = async (title, content) => {
 
 
 // ✅ 上傳題目到 Firestore
-export const uploadExercise = async (title, tag, question, code) => {
+export const uploadExercise = async (title, tag, question, code, codeLabels) => {
   if (!title || !tag || !question || !code) throw new Error("請填寫所有欄位！");
 
   try {
@@ -34,6 +34,7 @@ export const uploadExercise = async (title, tag, question, code) => {
       tag,
       question, // 🔥 存入題目內容
       code, // 🔥 存入正確答案
+      codeLabels,// 🔥 存入程式碼標籤
       createdAt: serverTimestamp(), // ✅ Firestore 內建時間戳記
       lastUpdated: serverTimestamp(),
     });

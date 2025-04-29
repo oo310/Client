@@ -41,11 +41,15 @@
 }
 .block-content {
     white-space: pre; /* 保留空格和縮排 */
+    font-size: 20px; /* 調整字體大小 */
+    /* color: white; 設定文字顏色 */
+    border-radius: 5px; /* 圓角 */
   }
 
 .block:hover {
     background: #dee2e6;
 }
+
 
 
 button {
@@ -92,3 +96,5 @@ button:hover {
       margin-right: 20px;
     }
   }
+
+ 

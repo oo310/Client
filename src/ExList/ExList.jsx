@@ -69,13 +69,11 @@ const ExList = () => {
           {Object.entries(groupedQuizs).map(([tag, items]) => (
             <div key={tag} className="bg-gray-50 rounded-lg shadow-sm">
               <div
-                className="flex justify-between items-center p-3 cursor-pointer hover:bg-gray-100 rounded-lg"
+                className="tag-container"
                 onClick={() => toggleTag(tag)}
-                style={{ cursor: 'pointer' }}
               >
-                <span className="font-medium">{tag}</span>
-                <span className={`transform transition-transform ${expandedTags.has(tag) ? 'rotate-180' : ''
-                  }`}>
+                <span className="tag-title">{tag}</span>
+                <span className={`tag-icon ${expandedTags.has(tag) ? 'rotate-180' : ''}`}>
                   ▼
                 </span>
               </div>
