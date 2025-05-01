@@ -19,27 +19,27 @@ const Exercise = () => {
   const [timeElapsed, setTimeElapsed] = useState(0);
   const timerRef = useRef(null);
   const [showColorInfo, setShowColorInfo] = useState(false);
-  const [blocks, setBlocks] = useState(() => {
-    return item.code.map((code, index) => ({
-      code,
-      label: item.codeLabels ? item.codeLabels[index] : null,
-    }));
-  });
-
-  // const [codeLabels, setCodeLabels] = useState(item.labels || []);
+  const [blocks, setBlocks] = useState([]);
 
   useEffect(() => {
     setTimeElapsed(0);
     setAttempts(0);
     // 重置 blocks 和 codeLabels 狀態
-    if (blocks.length > 1) {
-      let randomOrder;
-      do {
-        randomOrder = [...blocks].sort(() => Math.random() - 0.5);
-      } while (randomOrder.map(block => block.code).join('') === item.code.join(''));
-      setBlocks(randomOrder);
-    } else {
-      setBlocks(blocks);
+    if (item && item.code) {
+      const initialBlocks = item.code.map((code, index) => ({
+        code,
+        label: item.codeLabels ? item.codeLabels[index] : null,
+      }));
+  
+      if (initialBlocks.length > 1) {
+        let randomOrder;
+        do {
+          randomOrder = [...initialBlocks].sort(() => Math.random() - 0.5);
+        } while (randomOrder.map(block => block.code).join('') === item.code.join(''));
+        setBlocks(randomOrder);
+      } else {
+        setBlocks(initialBlocks);
+      }
     }
     // setCodeLabels(item.labels || []);
     let originalZIndex;
