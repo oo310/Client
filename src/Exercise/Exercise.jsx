@@ -3,7 +3,7 @@ import interact from 'interactjs';
 import "./Exercise.css"
 import { useLocation, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import confetti from 'canvas-confetti'; 
+import confetti from 'canvas-confetti';
 import { useAuth } from '../AuthContext';
 
 import { updateUserGrades } from "../firebase/firebaseUserGrades";;
@@ -18,13 +18,15 @@ const Exercise = () => {
   const [attempts, setAttempts] = useState(0);
   const [timeElapsed, setTimeElapsed] = useState(0);
   const timerRef = useRef(null);
-  
+  const [showColorInfo, setShowColorInfo] = useState(false);
   const [blocks, setBlocks] = useState(() => {
     return item.code.map((code, index) => ({
       code,
       label: item.codeLabels ? item.codeLabels[index] : null,
     }));
   });
+
+  // const [codeLabels, setCodeLabels] = useState(item.labels || []);
 
   useEffect(() => {
     setTimeElapsed(0);
@@ -39,10 +41,12 @@ const Exercise = () => {
     } else {
       setBlocks(blocks);
     }
+    // setCodeLabels(item.labels || []);
+    let originalZIndex;
     // 初始化拖曳
     interact('.block').draggable({
       listeners: {
-        
+
         move(event) {
           const target = event.target;
 
@@ -67,7 +71,7 @@ const Exercise = () => {
 
     // 初始化放置區
     interact('.zone').dropzone({
-      
+
       ondragenter(event) {
         const zone = event.target;
         zone.classList.add('hover');
@@ -108,7 +112,7 @@ const Exercise = () => {
         event.target.classList.remove('hover');
       },
     });
-    
+
     timerRef.current = setInterval(() => {
       setTimeElapsed(prev => prev + 1);
     }, 1000);
@@ -120,8 +124,10 @@ const Exercise = () => {
       clearInterval(timerRef.current);
     };
   }, [item]); // 當 item 改變時執行
-  
 
+  const toggleColorInfo = () => {
+    setShowColorInfo(v => !v);
+  };
   // 檢查答案邏輯
   const handleSubmit = () => {
     const blocks = answerZoneRef.current.querySelectorAll('.block');
@@ -134,8 +140,8 @@ const Exercise = () => {
         clearInterval(timerRef.current);
 
         updateUserGrades(userInfo.uid, item, timeElapsed, newAttempts)
-        .then(() => console.log("🔥 Firebase 更新成功"))
-        .catch((error) => console.error("🔥 Firebase 更新失敗", error));
+          .then(() => console.log("🔥 Firebase 更新成功"))
+          .catch((error) => console.error("🔥 Firebase 更新失敗", error));
 
         Swal.fire({
           title: "答對了！",
@@ -167,7 +173,7 @@ const Exercise = () => {
 
       return newAttempts; // ✅ 確保狀態更新
     });
-  }; 
+  };
   const handleReturnToSet = () => {
     navigate('/ex_list');
   };
@@ -211,7 +217,7 @@ const Exercise = () => {
       default:
         return { backgroundColor: '#F9F9F9' }; // 預設使用非常淺的灰色
     }
-};
+  };
 
 
 
@@ -221,7 +227,7 @@ const Exercise = () => {
       <div className="exercise-header">
         <div className="header-content">
           <h3 className="question-title">{item.title}</h3>
-          <p className="timer">⏳ 時間：{timeElapsed } 秒 | 📝 作答次數：{attempts}</p>
+          <p className="timer">⏳ 時間：{timeElapsed} 秒 | 📝 作答次數：{attempts}</p>
         </div>
         <div className="question-description">
           <p><strong>題目說明：</strong></p>
@@ -229,16 +235,71 @@ const Exercise = () => {
         </div>
       </div>
 
-      <div className="answer-header">
-        <h2>作答區</h2>
+      <div className="answer-header" style={{ justifycontent: 'space-between', width: '100%' }} >
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <h2 style={{ marginBottom: 0 }}>作答區</h2>
+          <div style={{ position: 'relative' }}>
+            <button
+              type="button"
+              onClick={toggleColorInfo}
+              style={{
+                fontSize: '20px',
+                background: '#e9f7ef',
+                borderRadius: '8px',
+                padding: '8px 16px',
+                lineHeight: 1.7,
+                alignItems: 'center',
+                color: '#333',
+                // boxShadow: '0 1px 4px ',
+                border: 'none',
+                cursor: 'pointer'
+              }}
+            >
+              <i className="fas fa-circle-question"></i>
+            </button>
+            {showColorInfo && (
+              <div
+              style={{
+                position: 'absolute',
+                top: '110%',
+                right: 0,         // 靠齊右側
+                left: 'auto',
+                zIndex: 10,
+                background: '#fff',
+                border: '1px solid #eee',
+                borderRadius: '8px',
+                padding: '12px 16px',
+                boxShadow: '0 2px 8px #ccc',
+                minWidth: '120px',
+                maxWidth: '90vw', // 避免超出畫面
+                overflowX: 'auto'
+              }}
+              >
+                <b>顏色說明：</b>
+                <div style={{ display: 'flex', flexDirection: "column", flexWrap: 'nowrap', gap: '12px', marginTop: '8px' }}>
+                  <span style={{ background: '#FFE8D6', padding: '2px 8px', borderRadius: '4px', whiteSpace: 'nowrap' }}>賦值</span>
+                  <span style={{ background: '#b5e8cb', padding: '2px 8px', borderRadius: '4px', whiteSpace: 'nowrap' }}>運算</span>
+                  <span style={{ background: '#FFD6A5', padding: '2px 8px', borderRadius: '4px', whiteSpace: 'nowrap' }}>迴圈</span>
+                  <span style={{ background: '#FFDDB9', padding: '2px 8px', borderRadius: '4px', whiteSpace: 'nowrap' }}>條件判斷</span>
+                  <span style={{ background: '#FFE6EB', padding: '2px 8px', borderRadius: '4px', whiteSpace: 'nowrap' }}>函式定義</span>
+                  <span style={{ background: '#EFE6FF', padding: '2px 8px', borderRadius: '4px', whiteSpace: 'nowrap' }}>輸出</span>
+                  <span style={{ background: '#E6F5FB', padding: '2px 8px', borderRadius: '4px', whiteSpace: 'nowrap' }}>輸入</span>
+                  <span style={{ background: '#FFF0F5', padding: '2px 8px', borderRadius: '4px', whiteSpace: 'nowrap' }}>函式呼叫</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+        </div>
+
         <div id="answer-zone" className="zone" ref={answerZoneRef}>
           {blocks.map((line, index) => (
-            <div 
-              key={index} 
-              className="block block-content" 
-              draggable="true" 
+            <div
+              key={index}
+              className="block block-content"
+              draggable="true"
               data-code={index}
-              style={getColorByLabel(line.label) }
+              style={getColorByLabel(line.label)}
             >
               {line.code}
             </div>
@@ -246,13 +307,13 @@ const Exercise = () => {
         </div>
       </div>
 
-      <div className="button-group" style={{ 
-        display: 'flex', 
-        gap: '10px', 
+      <div className="button-group" style={{
+        display: 'flex',
+        gap: '10px',
         marginTop: '20px',
-        justifyContent: 'center' 
+        justifyContent: 'center'
       }}>
-        <button 
+        <button
           onClick={handleSubmit}
           style={{
             padding: '8px 16px',
@@ -265,8 +326,8 @@ const Exercise = () => {
         >
           送出答案
         </button>
-        
-        <button 
+
+        <button
           onClick={handleReturnToSet}
           style={{
             padding: '8px 16px',
@@ -281,7 +342,7 @@ const Exercise = () => {
         </button>
 
         {isCorrect && (
-          <button 
+          <button
             onClick={handleNextExercise}
             style={{
               padding: '8px 16px',

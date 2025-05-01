@@ -19,6 +19,7 @@
     "bootstrap": "^5.3.3",
     "canvas-confetti": "^1.9.3",
     "firebase": "^11.1.0",
+    "framer-motion": "^12.9.2",
     "interactjs": "^1.10.27",
     "marked": "^15.0.4",
     "react": "^18.3.1",
