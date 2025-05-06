@@ -61,12 +61,22 @@ const ExList = () => {
       return newSet;
     });
   };
+  const tagOrder = ['範例', '輸入輸出', '條件判斷', '迴圈'];
+
   return (
     <>
       <h1>題目列表</h1>
       <div>
         <ul id="data-list" className="list-group">
-          {Object.entries(groupedQuizs).map(([tag, items]) => (
+          {Object.entries(groupedQuizs).sort(([a], [b]) => {
+            const idxA = tagOrder.indexOf(a);
+            const idxB = tagOrder.indexOf(b);
+            // 未在 tagOrder 內的排最後
+            if (idxA === -1 && idxB === -1) return a.localeCompare(b);
+            if (idxA === -1) return 1;
+            if (idxB === -1) return -1;
+            return idxA - idxB;
+          }).map(([tag, items]) => (
             <div key={tag} className="bg-gray-50 rounded-lg shadow-sm">
               <div
                 className="tag-container"

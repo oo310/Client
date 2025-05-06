@@ -1,6 +1,6 @@
 // 創建一個新的 Context 文件 (DataContext.js)
 import React, { createContext, useState , useEffect} from 'react';
-import { db, collection, getDocs, onSnapshot } from './firebase/firebase';
+import { db, collection, getDocs, orderBy, query, onSnapshot } from './firebase/firebase';
 
 export const DataContext = createContext();
 
@@ -29,23 +29,26 @@ export const DataProvider = ({ children }) => {
 
   // 監聽 lessons 資料庫
   useEffect(() => {
+    const lessonsQuery = query(
+      collection(db, "lessons"),
+      orderBy("createdAt", "asc") // 根據 createdAt 欄位做遞減排序
+    );
   
     const unsubscribeLessons = onSnapshot(
-
-      collection(db, "lessons"),
+      lessonsQuery,
       (snapshot) => {
         const data = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
+  
         setLessons(data); // 更新 lessons 狀態
       },
       (error) => {
         console.error("Error fetching lessons: ", error);
       }
     );
-
-    
+  
     return () => unsubscribeLessons(); // 清理 lessons 的監聽器
   }, []);
 

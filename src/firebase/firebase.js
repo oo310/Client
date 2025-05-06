@@ -1,6 +1,6 @@
 // firebase.js
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs, addDoc, onSnapshot, serverTimestamp } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, query, orderBy, addDoc, onSnapshot, serverTimestamp } from 'firebase/firestore';
 
 // Firebase 配置資訊
 const firebaseConfig = {
@@ -20,4 +20,4 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // 輸出 Firestore 實例
-export { db, collection, getDocs , onSnapshot ,addDoc, serverTimestamp};
+export { db, collection, getDocs , query, orderBy, onSnapshot ,addDoc, serverTimestamp};

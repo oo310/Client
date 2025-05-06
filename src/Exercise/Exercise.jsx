@@ -41,8 +41,6 @@ const Exercise = () => {
         setBlocks(initialBlocks);
       }
     }
-    // setCodeLabels(item.labels || []);
-    let originalZIndex;
     // 初始化拖曳
     interact('.block').draggable({
       listeners: {
