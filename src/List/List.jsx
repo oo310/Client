@@ -45,9 +45,13 @@ const List = () => {
   const handleLessonClick = (lessonId) => {
     setExpandedLesson(expandedLesson === lessonId ? null : lessonId);
   };
-
+  if (!lessons || lessons.length === 0) {
+    return <div style={{ padding: '40px', textAlign: 'center' }}>載入中...</div>;
+  
+  }
   return (
     <div className="min-h-screen bg-gray-50">
+      <h1>教材列表</h1>
       <div className="mx-auto">
         {userInfo?.role === "admin" && (
           <div className="flex gap-2 mt-4">

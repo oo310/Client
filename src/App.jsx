@@ -11,7 +11,7 @@ function App() {
   return (
     <AuthProvider>
       <DataProvider>
-        <Router>
+        <Router basename="/Client/">
           <Navbar />
           <LoginModal />
           <div >

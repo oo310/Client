@@ -12,7 +12,8 @@ const ExList = () => {
   const [expandedTags, setExpandedTags] = useState(new Set());
   // console.log(quizs);
   const handleClick = (item, groupedQuizs) => {
-    navigate(`/exercise`, { state: { item, groupedQuizs } }); // 導航到詳細頁面，並將 `id` 傳遞到路由中
+    // navigate(`/exercise`, { state: { item, groupedQuizs } }); // 導航到詳細頁面，並將 `id` 傳遞到路由中
+    navigate(`/exercise/${item.id}`); // 導航到詳細頁面，並將 `id` 傳遞到路由中
   };
   const handleDelete = async (exerciseId) => {
     console.log('Delete exercise', exerciseId);

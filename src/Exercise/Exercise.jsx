@@ -1,17 +1,20 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState ,useContext} from 'react';
+import { DataContext } from '../DataContext';
 import interact from 'interactjs';
 import "./Exercise.css"
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import confetti from 'canvas-confetti';
+import confetti from 'canvas-confetti'; 
 import { useAuth } from '../AuthContext';
 
 import { updateUserGrades } from "../firebase/firebaseUserGrades";;
 
 const Exercise = () => {
   const { userInfo } = useAuth();
-  const location = useLocation();
-  const { item, groupedQuizs } = location.state || {};
+  const { id } = useParams();
+  const { quizs } = useContext(DataContext)|| {};
+  const item = quizs.find(q => q.id === id);
+  const groupedQuizs = quizs.filter(q => q.tag === item.tag);
   const navigate = useNavigate();
   const answerZoneRef = useRef(null);
   const [isCorrect, setIsCorrect] = useState(false);
@@ -20,7 +23,7 @@ const Exercise = () => {
   const timerRef = useRef(null);
   const [showColorInfo, setShowColorInfo] = useState(false);
   const [blocks, setBlocks] = useState([]);
-
+  
   useEffect(() => {
     setTimeElapsed(0);
     setAttempts(0);
@@ -181,7 +184,8 @@ const Exercise = () => {
     if (currentIndex < groupedQuizs.length - 1) {
       const nextExercise = groupedQuizs[currentIndex + 1];
       setIsCorrect(false)
-      navigate('/exercise', { state: { item: nextExercise, groupedQuizs } });
+      // navigate('/exercise', { state: { item: nextExercise, groupedQuizs } });
+      navigate(`/exercise/${nextExercise.id}`);
     } else {
       Swal.fire({
         title: '恭喜！',
@@ -217,7 +221,10 @@ const Exercise = () => {
     }
   };
 
-
+  if (!quizs || quizs.length === 0) {
+    return <div style={{ padding: '40px', textAlign: 'center' }}>載入中...</div>;
+  
+  }
 
 
   return (

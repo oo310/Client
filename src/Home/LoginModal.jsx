@@ -110,11 +110,11 @@ const LoginModal = () => {
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>電子郵件</Form.Label>
             <Form.Control
-              type="email"
+              type={isLoginMode ? "text" : "email"}
               placeholder="輸入您的電子郵件"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              onBlur={handleEmailBlur}
+              // onBlur={handleEmailBlur}
             />
           </Form.Group>
 
