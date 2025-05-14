@@ -1,15 +1,42 @@
-import React, { useState, useContext, useMemo } from 'react';
+import React, { useState, useContext, useMemo, useEffect } from 'react';
 import { DataContext } from '../DataContext';
+import { getUserGrades } from '../firebase/firebaseUserGrades'; // 載入你剛剛寫的函式
 import "./ExList.css"
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { deleteDocument } from '../firebase/firebaseCRUD';
 import Button from 'react-bootstrap/Button';
 import { useAuth } from '../AuthContext';
+
 const ExList = () => {
   const navigate = useNavigate();
   const { quizs } = useContext(DataContext);
   const { userInfo } = useAuth();
   const [expandedTags, setExpandedTags] = useState(new Set());
+  const [passedIds, setPassedIds] = useState([]);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    if (userInfo?.uid) {
+      getUserGrades(userInfo.uid,"grades").then((grades) => {
+        const ids = [];
+        if (grades?.materials) {
+          Object.values(grades.materials).forEach(tagObj => {
+            Object.keys(tagObj).forEach(id => {
+              ids.push(id);
+            });
+          });
+        }
+        setPassedIds(ids);
+      });
+    }
+  }, [userInfo]);
   // console.log(quizs);
   const handleClick = (item, groupedQuizs) => {
     // navigate(`/exercise`, { state: { item, groupedQuizs } }); // 導航到詳細頁面，並將 `id` 傳遞到路由中
@@ -104,6 +131,35 @@ const ExList = () => {
                         >
                           {item.title}
                         </div>
+                        {/* 已通關標籤 */}
+                        {passedIds.includes(item.id) && (
+                          isMobile ? (
+                            <span
+                              style={{
+                                marginLeft: '16px',
+                                color: '#4CAF50',
+                                fontSize: '1.5em',
+                                display: 'flex',
+                                alignItems: 'center'
+                              }}
+                              aria-label="已通關"
+                            >
+                              <i className="fas fa-check"></i>
+                            </span>
+                          ) : (
+                            <span style={{
+                              marginLeft: '16px',
+                              color: '#fff',
+                              background: '#4CAF50',
+                              borderRadius: '12px',
+                              padding: '2px 12px',
+                              fontSize: '0.95em',
+                              fontWeight: 'bold'
+                            }}>
+                              已通關
+                            </span>
+                          )
+                        )}
                         {userInfo?.role === "admin" && (
                           <div className="flex gap-2">
                             <Button

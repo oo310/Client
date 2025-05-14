@@ -84,3 +84,9 @@ export const updateTestGrades = async (userId, item, timeElapsed, attempts) => {
     throw error;
   }
 };
+
+export const getUserGrades = async (userId,table) => {
+  const docRef = doc(db, table, userId);
+  const docSnap = await getDoc(docRef);
+  return docSnap.exists() ? docSnap.data() : null;
+};

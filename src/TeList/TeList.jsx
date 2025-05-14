@@ -5,6 +5,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { deleteDocument, getTestListByCode } from '../firebase/firebaseCRUD';
 import Button from 'react-bootstrap/Button';
 import { useAuth } from '../AuthContext';
+import { getUserGrades } from '../firebase/firebaseUserGrades'; // 加在 import 區
 
 const TeList = () => {
   const navigate = useNavigate();
@@ -15,7 +16,9 @@ const TeList = () => {
   const [code, setCode] = useState(location.state?.code || '');
   const [inputMode, setInputMode] = useState(true);
   const [error, setError] = useState('');
-
+  const [passedIds, setPassedIds] = useState([]);
+  const [isMobile, setIsMobile] = useState(false);
+  
   // 取得 test_list 文件（根據代號）
   const fetchTestList = async (inputCode) => {
     setError('');
@@ -30,12 +33,33 @@ const TeList = () => {
   };
 
   useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+  
+  useEffect(() => {
     if (location.state?.code) {
       setCode(location.state.code);
       fetchTestList(location.state.code); // 直接查詢
       setInputMode(false);
     }
   }, [location.state]);
+
+  useEffect(() => {
+    if (userInfo?.uid) {
+      getUserGrades(userInfo.uid, "test").then((grades) => {
+        const ids = [];
+        if (grades) {
+          Object.keys(grades).forEach(id => {
+            ids.push(id);
+          });
+        }
+        setPassedIds(ids);
+      });
+    }
+  }, [userInfo]);
 
   // 只顯示 id 有在 test_list 裡的 quizs，並依 testIds 順序排列
   const sortedQuizs = testIds
@@ -90,6 +114,35 @@ const TeList = () => {
                   >
                     {item.title}
                   </div>
+                  {/* 通關勾勾 */}
+                  {passedIds.includes(item.id) && (
+                          isMobile ? (
+                            <span
+                              style={{
+                                marginLeft: '16px',
+                                color: '#4CAF50',
+                                fontSize: '1.5em',
+                                display: 'flex',
+                                alignItems: 'center'
+                              }}
+                              aria-label="已通關"
+                            >
+                              <i className="fas fa-check"></i>
+                            </span>
+                          ) : (
+                            <span style={{
+                              marginLeft: '16px',
+                              color: '#fff',
+                              background: '#4CAF50',
+                              borderRadius: '12px',
+                              padding: '2px 12px',
+                              fontSize: '0.95em',
+                              fontWeight: 'bold'
+                            }}>
+                              已通關
+                            </span>
+                          )
+                        )}
                   {userInfo?.role === "admin" && (
                     <div className="flex gap-2">
                       <Button

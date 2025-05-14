@@ -54,27 +54,6 @@ export const registerUser = async (username, email, password, quizs) => {
     const materialsByTag = {};
     let totalQuestions = quizs.length;
 
-    // // 處理每個題目
-    // quizs.forEach(quiz => {
-    //   const tag = quiz.tag || 'uncategorized';
-
-    //   // 如果這個 tag 還沒有初始化，創建一個新的 map
-    //   if (!materialsByTag[tag]) {
-    //     materialsByTag[tag] = {};
-    //   }
-
-    //   // 使用 id 作為 key，將 title 存入資料中
-    //   // materialsByTag[tag][quiz.title] = {
-    //   //   id: quiz.id,
-    //   //   answeredAt: null,
-    //   //   status: false,
-    //   //   answer: null,
-    //   //   score: 0
-    //   // };
-
-    //   totalQuestions += 1;
-    // });
-
     // 創建新用戶資料
     const userData = {
       name: username,
