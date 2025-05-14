@@ -41,6 +41,9 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarNav" ref={navbarRef}>
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
+              <Link className="nav-link" to="/te_list" onClick={handleNavCollapse}>測驗模式</Link>
+            </li>
+            <li className="nav-item">
               <Link className="nav-link" to="/list" onClick={handleNavCollapse}>教材列表</Link>
             </li>
             <li className="nav-item">

@@ -50,3 +50,37 @@ export const updateUserGrades = async (userId, item, timeElapsed, attempts) => {
     throw error;
   }
 };
+
+export const updateTestGrades = async (userId, item, timeElapsed, attempts) => {
+  if (!userId) throw new Error("無效的使用者 ID");
+
+  const timestamp = new Date();
+  const docRef = doc(db, "test", userId);
+
+  try {
+    const docSnap = await getDoc(docRef);
+    // 如果文件已存在且已有這題的 id，就不寫入
+    if (docSnap.exists() && docSnap.data() && docSnap.data()[item.id]) {
+      console.log("❗ 已有該題紀錄，不寫入");
+      return;
+    }
+
+    // 合併寫入（保留其他題目）
+    const data = {
+      [item.id]: {
+        tag: item.tag,
+        title: item.title,
+        isCorrect: true,
+        timeElapsed,
+        attempts,
+        timestamp,
+      }
+    };
+
+    await setDoc(docRef, data, { merge: true });
+    console.log("✅ 作答結果已更新到 Firebase `test_grades`");
+  } catch (error) {
+    console.error("🔥 更新 Firebase 失敗:", error);
+    throw error;
+  }
+};

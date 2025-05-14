@@ -1,0 +1,66 @@
+body {
+    font-family: Arial, "Microsoft JhengHei", sans-serif;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+#data-list {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+}
+
+#data-list li {
+    border: none;
+    padding: 10px 15px;
+    transition: background-color 0.2s ease;
+}
+
+#data-list li:hover {
+    background-color: #f0f8ff;
+}
+
+#data-list a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 500;
+}
+
+#data-list a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+.tag-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .tag-container:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .tag-title {
+    font-weight: 500;
+  }
+  
+  .tag-icon {
+    margin-left: auto;
+    transition: transform 0.3s;
+  }
+  
+  .tag-icon.rotate-180 {
+    transform: rotate(180deg);
+  }

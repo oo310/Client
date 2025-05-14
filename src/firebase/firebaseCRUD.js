@@ -1,6 +1,6 @@
 // src/services/firebaseService.js
 import { db } from "./firebase"; // ✅ 引入 Firestore
-import { collection, addDoc, serverTimestamp, deleteDoc, doc} from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, deleteDoc, doc, getDoc, onSnapshot} from "firebase/firestore";
 
 // ✅ 上傳教材到 Firestore
 export const uploadLesson = async (title, content) => {
@@ -59,3 +59,13 @@ export const deleteDocument = async (collectionName, docId) => {
     throw error;
   }
 };
+
+export async function getTestListByCode(code) {
+  const docRef = doc(db, "test", code);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    return docSnap.data();
+  } else {
+    return null;
+  }
+}
