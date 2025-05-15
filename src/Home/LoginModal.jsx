@@ -103,6 +103,7 @@ const LoginModal = () => {
                 placeholder="輸入您的名稱"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                required
               />
             </Form.Group>
           )}
@@ -114,6 +115,7 @@ const LoginModal = () => {
               placeholder="輸入您的電子郵件"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
               // onBlur={handleEmailBlur}
             />
           </Form.Group>
@@ -125,6 +127,7 @@ const LoginModal = () => {
               placeholder= {isLoginMode ? "輸入您的密碼":"輸入您的密碼，輸入至少6個字的密碼"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </Form.Group>
 
@@ -136,6 +139,7 @@ const LoginModal = () => {
                 placeholder="再次輸入密碼"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                required
               />
             </Form.Group>
           )}

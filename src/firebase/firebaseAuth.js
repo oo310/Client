@@ -74,6 +74,7 @@ export const registerUser = async (username, email, password, quizs) => {
     // 添加到 Firestore
     const docRef = await setDoc(doc(db, "users", user.uid), userData);
     const docRef1 = await setDoc(doc(db, "grades", user.uid), scoreData);
+    const docRef2 = await setDoc(doc(db, "test", user.uid),{});
     
     return {
       success: true,
