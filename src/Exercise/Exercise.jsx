@@ -200,24 +200,24 @@ const Exercise = () => {
 
   const getColorByLabel = (label) => {
     switch (label) {
-      case '賦值': // Variables (淺橙色)
-        return { backgroundColor: '#FFE8D6' };
-      case '運算': // Operators (改為淺藍綠色，與背景區分)
+      case '賦值': // Variables
+        return { backgroundColor: '#FFE8D6' }; // 淺橙色
+      case '運算': // Operators
         return { backgroundColor: '#b5e8cb' };
-      case '迴圈': // Control (加深為較明顯的橘色)
-        return { backgroundColor: '#FFD6A5' };
-      case '條件判斷': // Control (與迴圈協調但略有差異)
-        return { backgroundColor: '#FFDDB9' };
-      case '函式定義': // My Blocks (淺粉色)
+      case '迴圈': // Loop
+        return { backgroundColor: '#FFF9C4' }; // 更淡的黃色
+      case '條件判斷': // Condition
+        return { backgroundColor: '#B2F2BB' }; // 淡綠色
+      case '函式定義':
         return { backgroundColor: '#FFE6EB' };
-      case '輸出': // Looks (淺紫色)
+      case '輸出':
         return { backgroundColor: '#EFE6FF' };
-      case '輸入': // Sensing (淺藍色)
+      case '輸入':
         return { backgroundColor: '#E6F5FB' };
-      case '函式呼叫': // My Blocks (淺粉色，比函式定義稍微淡一點)
+      case '函式呼叫':
         return { backgroundColor: '#FFF0F5' };
       default:
-        return { backgroundColor: '#F9F9F9' }; // 預設使用非常淺的灰色
+        return { backgroundColor: '#F9F9F9' };
     }
   };
 
@@ -249,7 +249,7 @@ const Exercise = () => {
               onClick={toggleColorInfo}
               style={{
                 fontSize: '20px',
-                background: '#e9f7ef',
+                background: '#fff',
                 borderRadius: '8px',
                 padding: '8px 16px',
                 lineHeight: 1.7,
@@ -284,8 +284,8 @@ const Exercise = () => {
                 <div style={{ display: 'flex', flexDirection: "column", flexWrap: 'nowrap', gap: '12px', marginTop: '8px' }}>
                   <span style={{ background: '#FFE8D6', padding: '2px 8px', borderRadius: '4px', whiteSpace: 'nowrap' }}>賦值</span>
                   <span style={{ background: '#b5e8cb', padding: '2px 8px', borderRadius: '4px', whiteSpace: 'nowrap' }}>運算</span>
-                  <span style={{ background: '#FFD6A5', padding: '2px 8px', borderRadius: '4px', whiteSpace: 'nowrap' }}>迴圈</span>
-                  <span style={{ background: '#FFDDB9', padding: '2px 8px', borderRadius: '4px', whiteSpace: 'nowrap' }}>條件判斷</span>
+                  <span style={{ background: '#FFF9C4', padding: '2px 8px', borderRadius: '4px', whiteSpace: 'nowrap' }}>迴圈</span>
+                  <span style={{ background: '#B2F2BB', padding: '2px 8px', borderRadius: '4px', whiteSpace: 'nowrap' }}>條件判斷</span>
                   <span style={{ background: '#FFE6EB', padding: '2px 8px', borderRadius: '4px', whiteSpace: 'nowrap' }}>函式定義</span>
                   <span style={{ background: '#EFE6FF', padding: '2px 8px', borderRadius: '4px', whiteSpace: 'nowrap' }}>輸出</span>
                   <span style={{ background: '#E6F5FB', padding: '2px 8px', borderRadius: '4px', whiteSpace: 'nowrap' }}>輸入</span>

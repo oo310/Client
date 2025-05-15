@@ -255,7 +255,7 @@ const Test = () => {
               onClick={toggleColorInfo}
               style={{
                 fontSize: '20px',
-                background: '#e9f7ef',
+                background: '#fff',
                 borderRadius: '8px',
                 padding: '8px 16px',
                 lineHeight: 1.7,
