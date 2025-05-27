@@ -98,4 +98,14 @@ button:hover {
       margin-right: 20px;
     }
   }
-  
+ .block-error {
+  box-shadow: 0 0 0 3px #ff4d4f, 0 0 8px 2px #ffb3b3;
+  animation: error-flash 0.4s;
+  border-radius: 6px;
+}
+
+@keyframes error-flash {
+  0% { box-shadow: 0 0 0 3px #ff4d4f, 0 0 8px 2px #ffb3b3; }
+  60% { box-shadow: 0 0 0 6px #ff4d4f, 0 0 16px 4px #ffb3b3; }
+  100% { box-shadow: 0 0 0 3px #ff4d4f, 0 0 8px 2px #ffb3b3; }
+}

@@ -23,10 +23,12 @@ const Exercise = () => {
   const timerRef = useRef(null);
   const [showColorInfo, setShowColorInfo] = useState(false);
   const [blocks, setBlocks] = useState([]);
+  const [errorIndexes, setErrorIndexes] = useState([]);
   
   useEffect(() => {
     setTimeElapsed(0);
     setAttempts(0);
+    setErrorIndexes([]); // 題目切換時清除紅光
     // 重置 blocks 和 codeLabels 狀態
     if (item && item.code) {
       const initialBlocks = item.code.map((code, index) => ({
@@ -126,24 +128,30 @@ const Exercise = () => {
     };
   }, [item]); // 當 item 改變時執行
 
+  useEffect(() => {
+    setErrorIndexes([]); // blocks 內容有變動時自動清空紅光
+  }, [blocks]);
+
   const toggleColorInfo = () => {
     setShowColorInfo(v => !v);
   };
   // 檢查答案邏輯
   const handleSubmit = () => {
-    const blocks = answerZoneRef.current.querySelectorAll('.block');
-    const userOrder = Array.from(blocks).map((block) => block.textContent);
+    const blocksDom = answerZoneRef.current.querySelectorAll('.block');
+    const userOrder = Array.from(blocksDom).map((block) => block.textContent);
+    // 取得每個 block 的 data-code 對應的 index
+    const dataCodes = Array.from(blocksDom).map((block) => parseInt(block.getAttribute('data-code')));
+    // 比對正確答案，錯誤的記錄 data-code
+    const newErrorIndexes = userOrder.map((code, idx) => code !== item.code[idx] ? dataCodes[idx] : -1).filter(idx => idx !== -1);
+    setErrorIndexes(newErrorIndexes);
     setAttempts((prevAttempts) => {
-      const newAttempts = prevAttempts + 1; // ✅ 確保取得最新 attempts
-
-      if (JSON.stringify(userOrder) === JSON.stringify(item.code)) {
+      const newAttempts = prevAttempts + 1;
+      if (newErrorIndexes.length === 0) {
         setIsCorrect(true);
         clearInterval(timerRef.current);
-
         updateUserGrades(userInfo.uid, item, timeElapsed, newAttempts)
           .then(() => console.log("🔥 Firebase 更新成功"))
           .catch((error) => console.error("🔥 Firebase 更新失敗", error));
-
         Swal.fire({
           title: "答對了！",
           text: `恭喜你完成這個題目！\n用時 ${timeElapsed} 秒\n作答次數：${newAttempts}`,
@@ -161,18 +169,18 @@ const Exercise = () => {
             }, 100);
           },
         });
-
       } else {
-        Swal.fire({
-          title: "答案不對喔",
-          text: "再試試看吧！",
-          icon: "error",
-          confirmButtonText: "再來一次",
-          confirmButtonColor: "#d33",
-        });
+        setTimeout(() => {
+          Swal.fire({
+            title: "答案不對喔",
+            text: "再試試看吧！",
+            icon: "error",
+            confirmButtonText: "再來一次",
+            confirmButtonColor: "#d33",
+          });
+        }, 350); // 紅光顯示 0.35 秒後再跳 Swal
       }
-
-      return newAttempts; // ✅ 確保狀態更新
+      return newAttempts;
     });
   };
   const handleReturnToSet = () => {
@@ -301,7 +309,7 @@ const Exercise = () => {
           {blocks.map((line, index) => (
             <div
               key={index}
-              className="block block-content"
+              className={`block block-content${errorIndexes.includes(index) ? ' block-error' : ''}`}
               draggable="true"
               data-code={index}
               style={getColorByLabel(line.label)}
