@@ -7,6 +7,8 @@ import List from './List/List';
 import ExList from './ExList/ExList';
 import TeList from './TeList/TeList';
 import Test from './Test/Test';
+import RecordsPage from './Records/RecordsPage';
+import TestListPage from './Records/TestListPage';
 import { Navigate } from 'react-router-dom';
 const AppRoutes = () => {
   return (
@@ -17,6 +19,8 @@ const AppRoutes = () => {
       <Route path="/ex_list" element={<ExList />} />
       <Route path="/test/:id" element={<Test />} />
       <Route path="/te_list" element={<TeList />} />
+      <Route path="/records" element={<RecordsPage />} />
+      <Route path="/test-list" element={<TestListPage />} />
     </Routes>
   );
 };
